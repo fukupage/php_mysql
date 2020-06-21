@@ -39,7 +39,9 @@
       </p>
       <time><?php print($my_memo['created_at']); ?></time>
       <hr>
-      <a href="./">一覧に戻る</a>
+      <a href="./">一覧に戻る</a> |
+      <a href="update.php?id=<?php print($my_memo['id']); ?>"> 記事を編集する</a> |
+      <a href="delete.php?id=<?php print($my_memo['id']); ?>"> 記事を削除する</a>
     </article>
   </main>
 </body>

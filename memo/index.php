@@ -20,7 +20,16 @@
     <?php
     require('dbconnect.php');
 
-    $my_memos = $db->query('SELECT * FROM my_memos ORDER BY id DESC');
+    if(isset($_REQUEST['page']) && is_numeric($_REQUEST['page'])){
+      $page = $_REQUEST['page'];
+    } else {
+      $page = 1;
+    }
+    $start = 5 * ($page - 1);
+
+    $my_memos = $db->prepare('SELECT * FROM my_memos ORDER BY id DESC LIMIT ?, 5');
+    $my_memos -> bindParam(1, $start, PDO::PARAM_INT);
+    $my_memos -> execute();
     ?>
     <article>
       <?php while($my_memo = $my_memos->fetch()) : ?>
@@ -32,6 +41,17 @@
         <time><?php print($my_memo['created_at']); ?></time>
         <hr>
       <?php endwhile; ?>
+      <?php if($page >= 2):?>
+      <a href="index.php?page=<?php print($page - 1); ?>"><?php print($page - 1); ?>ページ目</a>
+      <?php endif;?>｜
+      <?php
+      $counts = $db -> query('SELECT COUNT(*) as cnt FROM my_memos');
+      $count = $counts -> fetch();
+      $max_page = ceil($count['cnt'] / 5);
+      if($page < $max_page):
+      ?>
+      <a href="index.php?page=<?php print($page + 1); ?>"><?php print($page + 1); ?>ページ目</a>
+      <?php endif ?>
     </article>
   </main>
 </body>
